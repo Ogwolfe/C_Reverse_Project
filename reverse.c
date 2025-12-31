@@ -3,11 +3,12 @@
 #include <string.h>
 
 struct Node {
-    char *string;
+    char *str;
+    size_t len;
     struct Node *next;
 };
 
-
+struct Node *Head = NULL;
 
 int main(int argc, char** argv){
 
@@ -42,6 +43,40 @@ int main(int argc, char** argv){
             fclose(input);
             exit(1);
         }
+    }
+
+    char *current_line = NULL;
+    size_t line_len = 0;
+    ssize_t num_read;
+    while((num_read = getline(&current_line, &line_len, input)) != -1){
+        struct Node *p = malloc(sizeof(struct Node));
+        if(!p){
+            fprintf(stderr, "malloc failed\n");
+            fclose(input);
+            fclose(output);
+            exit(1);
+        }
+
+        p->str = malloc(num_read + 1);
+        strcpy(p->str, current_line);
+        p->len = num_read;
+
+        //Base case: first element
+        if(!Head)   p->next = NULL;
+
+        else    p->next = Head;
+
+        Head = p;
+    }
+
+    free(current_line);
+
+    while(Head){
+        struct Node *p = Head->next;
+        fwrite(Head->str, Head->len, 1, output);
+        free(Head->str);
+        free(Head);
+        Head = p;
     }
 
     fclose(input);
