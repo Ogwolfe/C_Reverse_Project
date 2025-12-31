@@ -4,16 +4,16 @@
 
 int main(int argc, char** argv){
 
-    FILE *input, *output;
+    FILE *input = NULL, *output = NULL;
 
     if(argc > 3){
-        fprintf(stderr, "usage: reverse <input> <output>");
+        fprintf(stderr, "usage: reverse <input> <output>\n");
         exit(1);
     }
 
     if(argc == 3){
         if(strcmp(argv[1], argv[2]) == 0){
-            fprintf(stderr, "Input and output file must differ");
+            fprintf(stderr, "Input and output file must differ\n");
             exit(1);
         }
 
@@ -26,12 +26,15 @@ int main(int argc, char** argv){
         output = fopen(argv[2], "w");
         if(output == NULL){
             fprintf(stderr, "error: cannot open file '%s'\n", argv[2]);
+            exit(1);
         }
+
+        fclose(input);
+        fclose(output);
     }
 
 
 
-    fclose(input);
-    fclose(output);
+    
     return 0;
 }
